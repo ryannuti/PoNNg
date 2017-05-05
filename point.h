@@ -22,6 +22,7 @@ class Point
         void add(Point* b, float rate);
         void add(float x, float y);
         void set(float x, float y);
+        float magnitude();
 };
 
 #endif

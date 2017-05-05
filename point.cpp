@@ -57,3 +57,8 @@ void Point::set(float x, float y)
 	this->y = y;
 }
 
+float Point::magnitude()
+{
+	return sqrt(this->x * this->x + this->y * this->y);
+}
+

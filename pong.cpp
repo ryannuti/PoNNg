@@ -2,12 +2,54 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include "ball.h"
+#include "paddle.h"
 
 using namespace std;
 
-float windowSize = 500;
+int windowHeight = 500;
+int windowWidth = 800;
 
-Ball* ball = new Ball();
+Ball* ball;
+Paddle** paddles = new Paddle*[2];
+
+void initGame()
+{
+	double angle = (rand() % 90 + 135.0) * M_PI / 180;
+	ball = new Ball(5 * cos(angle), 5 * sin(angle));
+	paddles[0] = new Paddle(- windowWidth / 2.0 + 10);
+	paddles[1] = new Paddle(windowWidth / 2.0 - 10);
+}
+
+void update()
+{
+	ball->updatePos();
+
+	paddles[0]->setY(ball->getPos()->getY());
+	// if(training)
+		paddles[1]->setY(ball->getPos()->getY());
+	// else
+		// AI
+	
+	
+	if(ball->checkPaddle(paddles[0]))
+	{
+		paddles[0]->randOffset();
+	// generate new AI problem
+	}
+	
+	// if
+	ball->checkPaddle(paddles[1]);
+	// training
+	
+	ball->checkWalls(windowHeight / 2.0);
+	
+	// if
+	ball->checkEnd(windowWidth / 2.0);
+	// reset ball
+	// training
+	
+	glutPostRedisplay();
+}
 
 void renderScene()
 {
@@ -43,10 +85,13 @@ void renderScene()
 	
 	
 	glBegin(GL_LINES);
-		glVertex2i(-windowSize/2 + 10, -windowSize/2 + 10);
-		glVertex2i(-windowSize/2 + 10, -windowSize/2 + 100);
-		glVertex2i(windowSize/2 - 10, windowSize/2 - 10);
-		glVertex2i(windowSize/2 - 10, windowSize/2 - 100);
+		for(int i = 0; i < 2; i++)
+		{
+			int x = (int) paddles[i]->getPos()->getX();
+			int y = (int) paddles[i]->getPos()->getY();
+			glVertex2i(x, y - 40);
+			glVertex2i(x, y + 40);
+		}
 	glEnd();
 
     glutSwapBuffers();
@@ -57,8 +102,9 @@ void init2D(float r, float g, float b)
 {
 	glClearColor(r,g,b,0.0);  
 	glMatrixMode (GL_PROJECTION);
-	float halfScr = windowSize / 2.0;
-	gluOrtho2D (-halfScr, halfScr, -halfScr, halfScr);
+	float halfWidth = windowWidth / 2.0;
+	float halfHeight = windowHeight / 2.0;
+	gluOrtho2D (-halfWidth, halfWidth, -halfHeight, halfHeight);
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -90,14 +136,16 @@ int main(int argc, char **argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(windowSize, windowSize);
+	glutInitWindowSize(windowWidth, windowHeight);
 	glutCreateWindow("Test");
 
 	init2D(0.0, 0.0, 0.0);
+	
+	initGame();
 
 	glutDisplayFunc(renderScene);
 
-	glutIdleFunc(renderScene);
+	glutIdleFunc(update);
 
 	glutKeyboardFunc(keyboard);
 

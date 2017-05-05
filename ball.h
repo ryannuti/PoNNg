@@ -2,7 +2,7 @@
 #define BALL_H
 
 #include "point.h"
-
+#include "paddle.h"
 
 
 class Ball
@@ -19,15 +19,21 @@ private:
     
 public:
 
-	Ball();
+	Ball(float xv, float yv);
 
 	Point* getPos();
-		
-	void hitCheck(Point d, Point dv);
 
 	void updatePos();
 	
 	void accelerate();
+	
+	void checkWalls(float halfHeight);
+
+	bool checkPaddle(Paddle* pad);
+		
+	bool hitCheck(Point* top, Point* bot);
+
+	bool checkEnd(float halfWidth);
 
 };
 
