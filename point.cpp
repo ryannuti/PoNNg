@@ -39,10 +39,11 @@ void Point::add(Point* b)
 	this->y += b->y;
 }
 
-void Point::add(Point* b, float rate)
+void Point::add(Point* b, float change)
 {
-	this->x += b->x * rate;
-	this->y += b->y * rate;
+	float mag = magnitude();
+	this->x *= (mag + change) / mag;
+	this->y *= (mag + change) / mag;
 }
 
 void Point::add(float x, float y)

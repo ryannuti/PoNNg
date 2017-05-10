@@ -39,14 +39,14 @@ void update()
 	
 	// if
 	ball->checkPaddle(paddles[1]);
-	// training
+	// do training
 	
 	ball->checkWalls(windowHeight / 2.0);
 	
 	// if
 	ball->checkEnd(windowWidth / 2.0);
 	// reset ball
-	// training
+	// if(right end) do training
 	
 	glutPostRedisplay();
 }
@@ -111,17 +111,20 @@ void keyboard(unsigned char key, int x, int y)
 {
 	switch(key)
 	{
-		case 'w':
-			
+		case 'r':
+			delete ball;
+			delete paddles[0];
+			delete paddles[1];
+			initGame();
 		break;
-		case 'a':
-
+		case 27:
+			exit(0);
 		break;
-		case 's':
-
+		case '=':
+			ball->accelerate(1.0);
 		break;
-		case 'd':
-
+		case '-':
+			ball->accelerate(-1.0);
 		break;
 		default:
 		break;

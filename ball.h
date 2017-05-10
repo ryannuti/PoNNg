@@ -12,9 +12,7 @@ private:
 
 	
 	Point* position;
-    Point* velocity;
-
-	static const float accelRate = 0.01;    
+    Point* velocity;    
     
     
 public:
@@ -25,7 +23,7 @@ public:
 
 	void updatePos();
 	
-	void accelerate();
+	void accelerate(double accelRate);
 	
 	void checkWalls(float halfHeight);
 

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "ball.h"
 
 using namespace std;
@@ -18,7 +19,7 @@ void Ball::updatePos()
 	this->position->add(this->velocity);
 }
 
-void Ball::accelerate()
+void Ball::accelerate(double accelRate)
 {
 	this->velocity->add(this->velocity, accelRate);
 }
@@ -78,12 +79,17 @@ bool Ball::hitCheck(Point* top, Point* bot)
 		if(hitY < topY && hitY > botY)
 		{
 			float dist = this->position->dist(new Point(targetX, hitY));
+			float dy = thisY - lastY;
 			
-			double angle = (M_PI_2 - fabs(atan(slope))) / 2;
-			angle += ((((hitY - botY) / 80) * 60 - 30) * M_PI / 180) / 2;
-			if(slope < 0) angle = -angle;
-			if(thisY - lastY > 0) angle += M_PI_2;
-			else angle -= M_PI_2;
+			double angle = M_PI_2 - fabs(atan(slope));
+			
+			if(dy > 0) angle *= ((topY - hitY) / 80) + 0.5;
+			else angle *= ((hitY - botY) / 80) + 0.5;
+			
+			angle = M_PI_2 - angle;
+			
+			if(slope > 0) angle = - angle;
+			if(dx > 0) angle += M_PI;
 			
 			this->position->set(targetX + dist * cos(angle), hitY + dist * sin(angle));
 			
